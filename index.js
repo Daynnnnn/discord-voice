@@ -1,11 +1,7 @@
 const Discord = require('discord.js');
-const AWS = require("aws-sdk");
 const client = new Discord.Client();
 const fs = require('fs');
 const WakewordDetector = require('@mathquis/node-personal-wakeword')
-const transcribeservice = new AWS.TranscribeService();
-
-AWS.config.update({region: "eu-west-1"});
 
 async function main() {
     client.once('ready', () => {
@@ -26,10 +22,20 @@ async function main() {
     ], {
         // Options
         disableAveraging: true, // Disabled by default, disable templates averaging (note that resources consumption will increase)
-        threshold: 0.52 // Per keyword threshold
+        threshold: 0.48 // Per keyword threshold
+    })
+
+    await detector.addKeyword('alakazam', [
+        './keywords/alakazam1.wav',
+        './keywords/alakazam2.wav'
+
+    ], {
+        // Options
+        disableAveraging: true, // Disabled by default, disable templates averaging (note that resources consumption will increase)
+        threshold: 0.48 // Per keyword threshold
     })
     
-                    // The detector will emit a "ready" event when its internal audio frame buffer is filled
+    // The detector will emit a "ready" event when its internal audio frame buffer is filled
     detector.on('ready', () => {
         console.log('listening...')
     })
@@ -60,9 +66,12 @@ async function main() {
                 console.log(`Detected "${keyword}" with score ${score} / ${threshold}`)
                 var channel = message.member.voice.channel;
                 for (let member of channel.members) {
-                    if (member[0] == '302161481842294785') {
+                    if (member[0] == '198392443190771722') {
+                        console.log(keyword)
+                        if (keyword == 'abrakadabra') { var mute = true }
+                        if (keyword == 'alakazam') { var mute = false }
                         console.log('Muting!')
-                        member[1].voice.setMute(true)
+                        member[1].voice.setMute(mute)
                    }
                 }
             })
