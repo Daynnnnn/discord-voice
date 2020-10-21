@@ -1,5 +1,5 @@
 {
-  "name": "discord-alexa",
+  "name": "discord-voice",
   "version": "1.0.0",
   "description": "Discord bot with voice commands and replies",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Daynnnnn/discord-alexa.git"
+    "url": "git+https://github.com/Daynnnnn/discord-voice.git"
   },
   "author": "Dan Pegg <dan@parall.ax>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Daynnnnn/discord-alexa/issues"
+    "url": "https://github.com/Daynnnnn/discord-voice/issues"
   },
-  "homepage": "https://github.com/Daynnnnn/discord-alexa#readme",
+  "homepage": "https://github.com/Daynnnnn/discord-voice#readme",
   "dependencies": {
     "@mathquis/node-personal-wakeword": "^1.0.9",
     "discord.js": "^12.4.0",
