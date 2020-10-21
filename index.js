@@ -24,7 +24,7 @@ async function main() {
     })
 
     discordClient.on('message', async (message) => {
-        if (message.content === '!join') {
+        if (message.content.substr(0,5) === '!join') {
             const connection = await message.member.voice.channel.join();
             const dispatcher = connection.play('./keywords/silence.wav');
             
@@ -44,7 +44,7 @@ async function main() {
                 console.log(`Detected "${keyword}" with score ${score} / ${threshold}`)
                 var channel = message.member.voice.channel;
                 for (let member of channel.members) {
-                    if (member[0] == '198392443190771722') {
+                    if (member[0] == message.content.substr(6)) {
                         console.log(keyword)
                         if (keyword == 'abrakadabra') { var mute = true }
                         if (keyword == 'alakazam') { var mute = false }
