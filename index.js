@@ -46,10 +46,10 @@ async function main() {
                 for (let member of channel.members) {
                     if (member[0] == message.content.substr(6)) {
                         console.log(keyword)
-                        if (keyword == 'abrakadabra') { var mute = true }
-                        if (keyword == 'alakazam') { var mute = false }
+                        if (keyword == 'abrakadabra') { member[1].voice.setMute(true) }
+                        if (keyword == 'alakazam') { member[1].voice.setMute(false) }
+                        if (keyword == 'hocus pocus') { member[1].voice.kick('dead') }
                         console.log('Muting!')
-                        member[1].voice.setMute(mute)
                    }
                 }
             })
@@ -72,6 +72,14 @@ async function main() {
     await keywordClient.addKeyword('alakazam', [
         './keywords/alakazam1.wav',
         './keywords/alakazam2.wav'
+    ], {
+        disableAveraging: true,
+        threshold: 0.58
+    })
+
+    await keywordClient.addKeyword('hocus pocus', [
+        './keywords/hocuspocus1.wav',
+        './keywords/hocuspocus2.wav'
     ], {
         disableAveraging: true,
         threshold: 0.58
