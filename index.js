@@ -1,51 +1,29 @@
+// Import dependencies
 const Discord = require('discord.js');
-const client = new Discord.Client();
-const fs = require('fs');
 const WakewordDetector = require('@mathquis/node-personal-wakeword')
 
+// Define clients
+const discordClient = new Discord.Client();
+const keywordClient = new WakewordDetector({
+    sampleRate: 48000,
+    threshold: 0.5
+})
+
 async function main() {
-    client.once('ready', () => {
+    // Define listeners
+    discordClient.once('ready', () => {
     	console.log('Ready!');
     });
-    
-    client.login(process.env.DISCORD_TOKEN);
-    
-    const detector = new WakewordDetector({
-        sampleRate: 48000,
-        threshold: 0.5
-    })
 
-    await detector.addKeyword('abrakadabra', [
-        './keywords/abrakadabra1.wav',
-        './keywords/abrakadabra2.wav'
-
-    ], {
-        // Options
-        disableAveraging: true, // Disabled by default, disable templates averaging (note that resources consumption will increase)
-        threshold: 0.48 // Per keyword threshold
-    })
-
-    await detector.addKeyword('alakazam', [
-        './keywords/alakazam1.wav',
-        './keywords/alakazam2.wav'
-
-    ], {
-        // Options
-        disableAveraging: true, // Disabled by default, disable templates averaging (note that resources consumption will increase)
-        threshold: 0.48 // Per keyword threshold
-    })
-    
-    // The detector will emit a "ready" event when its internal audio frame buffer is filled
-    detector.on('ready', () => {
+    keywordClient.on('ready', () => {
         console.log('listening...')
     })
 
-    // The detector will emit an "error" event when it encounters an error (VAD, feature extraction, etc.)
-    detector.on('error', err => {
+    keywordClient.on('error', err => {
         console.error(err.stack)
     })
 
-    client.on('message', async (message) => {
+    discordClient.on('message', async (message) => {
         if (message.content === '!join') {
             const connection = await message.member.voice.channel.join();
             const dispatcher = connection.play('./keywords/silence.wav');
@@ -60,9 +38,9 @@ async function main() {
               end: "manual",
             });
 
-            audio.pipe(detector)
+            audio.pipe(keywordClient)
 
-            detector.on('keyword', ({keyword, score, threshold, timestamp, audioData}) => {
+            keywordClient.on('keyword', ({keyword, score, threshold, timestamp, audioData}) => {
                 console.log(`Detected "${keyword}" with score ${score} / ${threshold}`)
                 var channel = message.member.voice.channel;
                 for (let member of channel.members) {
@@ -77,6 +55,26 @@ async function main() {
             })
 
         }
+    })
+
+    // Login to discord
+    discordClient.login(process.env.DISCORD_TOKEN);
+
+    // Define keywords
+    await keywordClient.addKeyword('abrakadabra', [
+        './keywords/abrakadabra1.wav',
+        './keywords/abrakadabra2.wav'
+    ], {
+        disableAveraging: true,
+        threshold: 0.48
+    })
+
+    await keywordClient.addKeyword('alakazam', [
+        './keywords/alakazam1.wav',
+        './keywords/alakazam2.wav'
+    ], {
+        disableAveraging: true,
+        threshold: 0.48
     })
 }
 
