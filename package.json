@@ -1,0 +1,19 @@
+{
+  "name": "discord-alexa",
+  "version": "1.0.0",
+  "description": "Discord bot with voice commands and replies",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Daynnnnn/discord-alexa.git"
+  },
+  "author": "Dan Pegg <dan@parall.ax>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Daynnnnn/discord-alexa/issues"
+  },
+  "homepage": "https://github.com/Daynnnnn/discord-alexa#readme"
+}
