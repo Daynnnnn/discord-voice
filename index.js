@@ -66,7 +66,7 @@ async function main() {
         './keywords/abrakadabra2.wav'
     ], {
         disableAveraging: true,
-        threshold: 0.48
+        threshold: 0.58
     })
 
     await keywordClient.addKeyword('alakazam', [
@@ -74,7 +74,7 @@ async function main() {
         './keywords/alakazam2.wav'
     ], {
         disableAveraging: true,
-        threshold: 0.48
+        threshold: 0.58
     })
 }
 
