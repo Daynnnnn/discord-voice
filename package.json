@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Daynnnnn/discord-alexa/issues"
   },
-  "homepage": "https://github.com/Daynnnnn/discord-alexa#readme"
+  "homepage": "https://github.com/Daynnnnn/discord-alexa#readme",
+  "dependencies": {
+    "discord.js": "^12.4.0"
+  }
 }
