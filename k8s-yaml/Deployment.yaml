@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-voice
+  namespace: discord-voice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discord-voice
+  template:
+    metadata:
+      labels:
+        app: discord-voice
+    spec:
+      containers:
+      - name: discord-voice
+        image: daynnnnn/discord-voice:stable
+        imagePullPolicy: Always
+        volumeMounts:
+        - name: persistant
+          mountPath: /persistant
+      volumes:
+      - name: persistant
+        hostPath:
+          path: /mnt/storage/servers/discord-voice
