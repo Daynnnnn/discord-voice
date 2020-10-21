@@ -17,6 +17,9 @@ spec:
       - name: discord-voice
         image: daynnnnn/discord-voice:stable
         imagePullPolicy: Always
+        env:
+        - name: DISCORD_TOKEN
+          value: ''
         volumeMounts:
         - name: persistant
           mountPath: /persistant

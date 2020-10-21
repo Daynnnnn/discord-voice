@@ -8,7 +8,7 @@ async function main() {
     	console.log('Ready!');
     });
     
-    client.login('NzY4Mzg3MjU2MjI2MjgzNTIw.X4_uZQ.0u7I0yOoIoLKaz-0blYwZMk2f4k');
+    client.login(process.env.DISCORD_TOKEN);
     
     const detector = new WakewordDetector({
         sampleRate: 48000,
