@@ -48,7 +48,6 @@ async function main() {
                         console.log(keyword)
                         if (keyword == 'abrakadabra') { member[1].voice.setMute(true) }
                         if (keyword == 'alakazam') { member[1].voice.setMute(false) }
-                        if (keyword == 'hocus pocus') { member[1].voice.kick('dead') }
                         console.log('Muting!')
                    }
                 }
@@ -66,7 +65,7 @@ async function main() {
         './keywords/abrakadabra2.wav'
     ], {
         disableAveraging: true,
-        threshold: 0.58
+        threshold: 0.52
     })
 
     await keywordClient.addKeyword('alakazam', [
@@ -74,7 +73,7 @@ async function main() {
         './keywords/alakazam2.wav'
     ], {
         disableAveraging: true,
-        threshold: 0.58
+        threshold: 0.52
     })
 
     await keywordClient.addKeyword('hocus pocus', [
@@ -82,7 +81,7 @@ async function main() {
         './keywords/hocuspocus2.wav'
     ], {
         disableAveraging: true,
-        threshold: 0.58
+        threshold: 0.52
     })
 }
 
