@@ -9,11 +9,13 @@ const keywordClient = new WakewordDetector({
     threshold: 0.5
 })
 
-async function main() {
-    // Define listeners
-    discordClient.once('ready', () => {
-    	console.log('Ready!');
-    });
+async function startListener(target) {
+
+    discordClient.on('message', async (message) => {
+        if (message.content === '!reset') {
+            return;
+        }
+    })
 
     keywordClient.on('ready', () => {
         console.log('listening...')
@@ -23,41 +25,34 @@ async function main() {
         console.error(err.stack)
     })
 
-    discordClient.on('message', async (message) => {
-        if (message.content.substr(0,5) === '!join') {
-            const connection = await message.member.voice.channel.join();
-            const dispatcher = connection.play('./keywords/silence.wav');
+    const connection = await message.member.voice.channel.join();
+    const dispatcher = connection.play('./keywords/silence.wav');
             
-            dispatcher.on('finish', () => {
-                console.log('dispatcher has finished playing!');
-            });
+    dispatcher.on('finish', () => {
+        console.log('dispatcher has finished playing!');
+    });
 
-            const userId = message.member.id;
-            const audio = connection.receiver.createStream(userId, {
-              mode: "pcm",
-              end: "manual",
-            });
+    const userId = message.member.id;
+    const audio = connection.receiver.createStream(userId, {
+        mode: "pcm",
+        end: "manual",
+    });
 
-            audio.pipe(keywordClient)
+    audio.pipe(keywordClient)
 
-            keywordClient.on('keyword', ({keyword, score, threshold, timestamp, audioData}) => {
-                console.log(`Detected "${keyword}" with score ${score} / ${threshold}`)
-                var channel = message.member.voice.channel;
-                for (let member of channel.members) {
-                    if (member[0] == message.content.substr(6)) {
-                        console.log(keyword)
-                        if (keyword == 'abrakadabra') { member[1].voice.setMute(true) }
-                        if (keyword == 'alakazam') { member[1].voice.setMute(false) }
-                        console.log('Muting!')
-                   }
-                }
-            })
-
+    keywordClient.on('keyword', ({keyword, score, threshold, timestamp, audioData}) => {
+        console.log(`Detected "${keyword}" with score ${score} / ${threshold}`)
+        var channel = message.member.voice.channel;
+        for (let member of channel.members) {
+            if (member[0] == target) {
+                console.log(keyword)
+                if (keyword == 'abrakadabra') { member[1].voice.setMute(true) }
+                if (keyword == 'alakazam') { member[1].voice.setMute(false) }
+                if (keyword == 'hocus pocus') { member[1].voice.kick('dead') }
+                console.log('Muting!')
+            }
         }
     })
-
-    // Login to discord
-    discordClient.login(process.env.DISCORD_TOKEN);
 
     // Define keywords
     await keywordClient.addKeyword('abrakadabra', [
@@ -73,7 +68,7 @@ async function main() {
         './keywords/alakazam2.wav'
     ], {
         disableAveraging: true,
-        threshold: 0.52
+        threshold: 0.56
     })
 
     await keywordClient.addKeyword('hocus pocus', [
@@ -81,8 +76,20 @@ async function main() {
         './keywords/hocuspocus2.wav'
     ], {
         disableAveraging: true,
-        threshold: 0.52
+        threshold: 0.55
     })
 }
 
-main()
+// Login to discord
+discordClient.login(process.env.DISCORD_TOKEN);
+
+// Define listeners
+discordClient.once('ready', () => {
+	console.log('Discord Client Loaded!');
+});
+
+discordClient.on('message', async (message) => {
+    if (message.content.substr(0,5) === '!join') {
+        startListener(message.content.substr(6))
+    }
+})
