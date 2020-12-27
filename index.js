@@ -9,13 +9,7 @@ const keywordClient = new WakewordDetector({
     threshold: 0.5
 })
 
-async function startListener(target) {
-
-    discordClient.on('message', async (message) => {
-        if (message.content === '!reset') {
-            return;
-        }
-    })
+async function startListener(message) {
 
     keywordClient.on('ready', () => {
         console.log('listening...')
@@ -41,15 +35,27 @@ async function startListener(target) {
     audio.pipe(keywordClient)
 
     keywordClient.on('keyword', ({keyword, score, threshold, timestamp, audioData}) => {
+    	const excemptUsers = ['768387256226283520', '198392443190771722', '299963524824694785'];
         console.log(`Detected "${keyword}" with score ${score} / ${threshold}`)
         var channel = message.member.voice.channel;
         for (let member of channel.members) {
-            if (member[0] == target) {
-                console.log(keyword)
-                if (keyword == 'abrakadabra') { member[1].voice.setMute(true) }
-                if (keyword == 'alakazam') { member[1].voice.setMute(false) }
-                if (keyword == 'hocus pocus') { member[1].voice.kick('dead') }
-                console.log('Muting!')
+            if (!excemptUsers.includes(member[0])) {
+				switch(keyword) {
+				    case 'abrakadabra':
+				      console.log('Muting ' + member[0]);
+				      member[1].voice.setMute(true);
+				      break;
+				    case 'alakazam':
+				      console.log('Unmuting ' + member[0]);
+				      member[1].voice.setMute(false);
+				      break;
+				    case 'hocus pocus':
+				      console.log('Disconnecting ' + member[0]);
+				      member[1].voice.kick('');
+				      break;
+				    default:
+				      console.log("Keyword not defined!");
+				}
             }
         }
     })
@@ -90,6 +96,6 @@ discordClient.once('ready', () => {
 
 discordClient.on('message', async (message) => {
     if (message.content.substr(0,5) === '!join') {
-        startListener(message.content.substr(6))
+        startListener(message)
     }
 })
