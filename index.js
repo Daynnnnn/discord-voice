@@ -9,6 +9,25 @@ const keywordClient = new WakewordDetector({
     threshold: 0.5
 })
 
+async function runCommand (member, keyword) {
+	switch(keyword) {
+	    case 'abrakadabra':
+	      console.log('Muting ' + member[0]);
+	      member[1].voice.setMute(true);
+	      break;
+	    case 'alakazam':
+	      console.log('Unmuting ' + member[0]);
+	      member[1].voice.setMute(false);
+	      break;
+	    case 'hocus pocus':
+	      console.log('Disconnecting ' + member[0]);
+	      member[1].voice.kick('');
+	      break;
+	    default:
+	      console.log("Keyword not defined!");
+	}
+}
+
 async function startListener(message) {
 
     keywordClient.on('ready', () => {
@@ -40,22 +59,7 @@ async function startListener(message) {
         var channel = message.member.voice.channel;
         for (let member of channel.members) {
             if (!excemptUsers.includes(member[0])) {
-				switch(keyword) {
-				    case 'abrakadabra':
-				      console.log('Muting ' + member[0]);
-				      member[1].voice.setMute(true);
-				      break;
-				    case 'alakazam':
-				      console.log('Unmuting ' + member[0]);
-				      member[1].voice.setMute(false);
-				      break;
-				    case 'hocus pocus':
-				      console.log('Disconnecting ' + member[0]);
-				      member[1].voice.kick('');
-				      break;
-				    default:
-				      console.log("Keyword not defined!");
-				}
+            	runCommand(member, keyword);
             }
         }
     })
