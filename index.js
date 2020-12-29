@@ -20,10 +20,10 @@ async function runCommand (member, keyword) {
 	      member[1].voice.setMute(false);
 	      break;
 	    case 'hocus pocus':
-	      console.log('Disconnecting ' + member[0]);
-	      member[1].voice.kick('');
-	      break;
-	    default:
+	      console.log('Disconnecting ' + member[0]);    
+          member[1].voice.kick('');
+          break;
+        default:
 	      console.log("Keyword not defined!");
 	}
 }
