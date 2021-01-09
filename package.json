@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/Daynnnnn/discord-voice#readme",
   "dependencies": {
-    "@mathquis/node-personal-wakeword": "^1.0.9",
+    "@picovoice/picovoice-node": "^1.1.0",
     "discord.js": "^12.4.0",
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.2.7",

@@ -1,13 +1,9 @@
 // Import dependencies
 const Discord = require('discord.js');
-const WakewordDetector = require('@mathquis/node-personal-wakeword')
+const Picovoice = require("@picovoice/picovoice-node");
 
 // Define clients
 const discordClient = new Discord.Client();
-const keywordClient = new WakewordDetector({
-    sampleRate: 48000,
-    threshold: 0.5
-})
 
 async function runCommand (member, keyword) {
 	switch(keyword) {
@@ -30,13 +26,17 @@ async function runCommand (member, keyword) {
 
 async function startListener(message) {
 
-    keywordClient.on('ready', () => {
-        console.log('listening...')
-    })
-
-    keywordClient.on('error', err => {
-        console.error(err.stack)
-    })
+    const picovoiceClient = new Picovoice(
+        keywordArgument,
+        keywordCallback,
+        contextPath,
+        inferenceCallback
+    );
+    
+    const inferenceCallback = function (inference) {
+        console.log("Inference:");
+        console.log(JSON.stringify(inference, null, 4));
+    };
 
     const connection = await message.member.voice.channel.join();
     const dispatcher = connection.play('./keywords/silence.wav');
@@ -51,43 +51,18 @@ async function startListener(message) {
         end: "manual",
     });
 
-    audio.pipe(keywordClient)
+    picovoiceClient.process(audio);
 
-    keywordClient.on('keyword', ({keyword, score, threshold, timestamp, audioData}) => {
+    const keywordCallback = function (keyword) {
     	const excemptUsers = ['768387256226283520', '198392443190771722', '299963524824694785'];
-        console.log(`Detected "${keyword}" with score ${score} / ${threshold}`)
+        console.log(`Detected "${keyword}".`)
         var channel = message.member.voice.channel;
         for (let member of channel.members) {
             if (!excemptUsers.includes(member[0])) {
             	runCommand(member, keyword);
             }
         }
-    })
-
-    // Define keywords
-    await keywordClient.addKeyword('abrakadabra', [
-        './keywords/abrakadabra1.wav',
-        './keywords/abrakadabra2.wav'
-    ], {
-        disableAveraging: true,
-        threshold: 0.52
-    })
-
-    await keywordClient.addKeyword('alakazam', [
-        './keywords/alakazam1.wav',
-        './keywords/alakazam2.wav'
-    ], {
-        disableAveraging: true,
-        threshold: 0.56
-    })
-
-    await keywordClient.addKeyword('hocus pocus', [
-        './keywords/hocuspocus1.wav',
-        './keywords/hocuspocus2.wav'
-    ], {
-        disableAveraging: true,
-        threshold: 0.55
-    })
+    }
 }
 
 // Login to discord
